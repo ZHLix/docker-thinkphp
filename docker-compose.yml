@@ -1,0 +1,49 @@
+version: '3'
+services:
+  httpd:
+    image: 'httpd:2.4.41-alpine'
+    container_name: 'lamp_httpd'
+    hostname: httpd
+    working_dir: /app
+    ports:
+      - '8080:80'
+    volumes:
+      - ./app:/app:rw
+      - ./services/httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro # apache 配置
+      - ./services/httpd/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf:ro # vhosts 相关配置
+#      - ./logs/apache:/usr/local/apache2/logs:rw # logs
+    links:
+      - php:php
+    networks:
+      - lamp
+
+  php:
+    image: 'php:7.1.9-fpm-alpine'
+    container_name: 'lamp_php'
+    hostname: php
+    working_dir: /app
+    ports:
+      - '9000:9000'
+    links:
+      - mysql:mysql
+    volumes:
+      - ./app:/app:rw
+    networks:
+      - lamp
+
+  mysql:
+    image: 'mysql:5.7.28'
+    container_name: 'lamp_mysql'
+    hostname: mysql
+    ports:
+      - '3306:3306'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - lamp
+
+
+
+networks:
+  lamp:
+    driver: bridge
