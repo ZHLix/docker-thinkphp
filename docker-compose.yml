@@ -17,7 +17,7 @@ services:
             - lamp
 
     php:
-        image: "php:7.1.9-fpm-alpine"
+        image: "crunchgeek/php-fpm:7.3-r6"
         container_name: "lamp_php"
         hostname: php
         working_dir: /app
@@ -30,12 +30,12 @@ services:
             - ./services/composer/composer.phar:/usr/local/bin/composer:ro
             - ./services/composer/config.json:/root/.composer/config.json:ro
             - ./cache/composer:/root/.composer/cache:rw
-#        command:
-#            - /bin/sh
-#            - -c
-#            - |
-#                composer config -g repo.packagist composer https://packagist.phpcomposer.com
-#                tail -f /dev/null
+        # command:
+        #     - /bin/sh
+        #     - -c
+        #     - |
+        #         sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+        #         tail -f /dev/null
         networks:
             - lamp
 
